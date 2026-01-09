@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Demo WhatsApp Cloud API — Painel</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="bg"></div>
+
+    <header class="topbar">
+      <div class="container topbar__inner">
+        <div class="brand">
+          <div class="brand__logo">WA</div>
+          <div class="brand__text">
+            <div class="brand__name">Demo WhatsApp Cloud API</div>
+            <div class="brand__sub">Envio + Webhook (polling) • Para gravação de evidência</div>
+          </div>
+        </div>
+
+        <nav class="nav">
+          <a class="nav__link" href="/">Painel</a>
+          <a class="nav__link" href="/privacy.html">Privacidade</a>
+          <a class="nav__link" href="/terms.html">Termos</a>
+          <a class="nav__link" href="/templates.html">Modelos</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container main">
+      <section class="grid">
+        <div class="card">
+          <div class="card__head">
+            <h2>Enviar mensagem</h2>
+            <div class="badge" id="healthBadge">Verificando…</div>
+          </div>
+          <p class="muted">
+            Use um número de WhatsApp real (E.164). Ex.: <code>+55 11 99999-9999</code>.
+          </p>
+
+          <form id="sendForm" class="form">
+            <label class="field">
+              <span>Número destino</span>
+              <input id="toInput" name="to" placeholder="+55 11 99999-9999" autocomplete="tel" />
+            </label>
+            <label class="field">
+              <span>Mensagem</span>
+              <textarea
+                id="textInput"
+                name="text"
+                placeholder="Olá! Este é um envio pela WhatsApp Cloud API."
+                rows="4"
+              ></textarea>
+            </label>
+            <div class="row">
+              <button class="btn" type="submit">Enviar agora</button>
+              <button class="btn btn--ghost" id="demoFill" type="button">Preencher exemplo</button>
+            </div>
+          </form>
+
+          <div class="status" id="sendStatus" aria-live="polite"></div>
+        </div>
+
+        <div class="card">
+          <div class="card__head">
+            <h2>Mensagens (últimas)</h2>
+            <div class="controls">
+              <button class="btn btn--ghost" id="refreshBtn" type="button">Atualizar</button>
+            </div>
+          </div>
+
+          <div class="list" id="messages"></div>
+          <div class="muted small">
+            Atualização automática a cada <strong>2s</strong> (polling). Sem websocket.
+          </div>
+        </div>
+      </section>
+
+      <section class="footer">
+        <div class="muted small">
+          Para usar em produção, você precisará persistência, controle de acesso, LGPD completa e gestão multi-empresa.
+        </div>
+      </section>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+</html>
+
+

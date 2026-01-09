@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Modelos (Templates) — Demo WhatsApp</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="bg"></div>
+    <header class="topbar">
+      <div class="container topbar__inner">
+        <div class="brand">
+          <div class="brand__logo">WA</div>
+          <div class="brand__text">
+            <div class="brand__name">Demo WhatsApp Cloud API</div>
+            <div class="brand__sub">Evidência de criação/gestão de modelos</div>
+          </div>
+        </div>
+        <nav class="nav">
+          <a class="nav__link" href="/">Painel</a>
+          <a class="nav__link" href="/privacy.html">Privacidade</a>
+          <a class="nav__link" href="/terms.html">Termos</a>
+          <a class="nav__link" href="/templates.html">Modelos</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container main">
+      <section class="card">
+        <div class="card__head">
+          <h2>Criação de modelo (template)</h2>
+          <div class="badge">Vídeo separado</div>
+        </div>
+
+        <p class="muted">
+          Para a permissão <code>whatsapp_business_management</code>, a Meta pede um vídeo mostrando criação de um modelo de mensagem.
+          O jeito mais simples/aceito é criar pelo <strong>WhatsApp Manager</strong>.
+        </p>
+
+        <div class="text">
+          <p><strong>Checklist do vídeo</strong></p>
+          <ul>
+            <li>Abra o painel do WhatsApp Manager (na conta correta).</li>
+            <li>Vá em <em>Message templates</em> (Modelos de mensagem).</li>
+            <li>Crie um template simples (ex.: confirmação de agendamento).</li>
+            <li>Mostre o template criado e o status (enviado para aprovação / aprovado).</li>
+          </ul>
+
+          <p><strong>Dica</strong><br />
+            Se você quiser, eu posso adicionar um endpoint via Graph API para criar template programaticamente.
+            Mas para passar na análise, normalmente o vídeo pelo Manager é o caminho com menos risco.
+          </p>
+        </div>
+
+        <div class="row" style="margin-top: 12px;">
+          <a class="btn btn--ghost" href="https://business.facebook.com/" target="_blank" rel="noreferrer">Abrir Business Manager</a>
+          <a class="btn btn--ghost" href="https://developers.facebook.com/" target="_blank" rel="noreferrer">Abrir Meta for Developers</a>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
+
+
