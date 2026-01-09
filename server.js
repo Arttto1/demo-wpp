@@ -53,6 +53,29 @@ function pushEvent(entry) {
 app.use(express.json({ limit: "2mb" }));
 app.use(express.urlencoded({ extended: true }));
 
+// Log básico de TODA requisição (útil no Render)
+app.use((req, res, next) => {
+  const started = Date.now();
+  res.on("finish", () => {
+    const ms = Date.now() - started;
+    const ip =
+      (req.headers["x-forwarded-for"] &&
+        String(req.headers["x-forwarded-for"]).split(",")[0].trim()) ||
+      req.ip;
+    const summary = `${req.method} ${req.originalUrl} -> ${res.statusCode} (${ms}ms)`;
+    console.log(summary);
+    pushEvent({
+      id: nowId("req"),
+      ts: Date.now(),
+      kind: res.statusCode >= 500 ? "error" : res.statusCode >= 400 ? "warn" : "info",
+      area: "http",
+      summary,
+      data: { ip, ua: req.headers["user-agent"] || "" },
+    });
+  });
+  next();
+});
+
 // Serve static site
 app.use(express.static(path.join(__dirname, "public")));
 
