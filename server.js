@@ -67,7 +67,12 @@ app.use((req, res, next) => {
     pushEvent({
       id: nowId("req"),
       ts: Date.now(),
-      kind: res.statusCode >= 500 ? "error" : res.statusCode >= 400 ? "warn" : "info",
+      kind:
+        res.statusCode >= 500
+          ? "error"
+          : res.statusCode >= 400
+          ? "warn"
+          : "info",
       area: "http",
       summary,
       data: { ip, ua: req.headers["user-agent"] || "" },
@@ -200,6 +205,112 @@ app.post("/api/send", async (req, res) => {
     return res
       .status(500)
       .json({ ok: false, error: "Erro interno", details: String(err) });
+  }
+});
+
+// ---- Send template message (initiate conversation) ----
+app.post("/api/send-template", async (req, res) => {
+  try {
+    const toRaw = String(req.body?.to || "").trim();
+    const templateName = String(req.body?.templateName || "").trim();
+    const language = String(req.body?.language || "pt_BR").trim();
+    const variables = Array.isArray(req.body?.variables) ? req.body.variables : [];
+
+    if (!toRaw || !templateName) {
+      return res.status(400).json({
+        ok: false,
+        error: "Campos obrigatórios: to, templateName",
+      });
+    }
+    if (!WHATSAPP_ACCESS_TOKEN || !WHATSAPP_PHONE_NUMBER_ID) {
+      return res.status(500).json({
+        ok: false,
+        error:
+          "Config ausente: WHATSAPP_ACCESS_TOKEN / WHATSAPP_PHONE_NUMBER_ID",
+      });
+    }
+
+    const to = toRaw.replace(/[^\d]/g, "");
+    const url = `https://graph.facebook.com/${GRAPH_API_VERSION}/${WHATSAPP_PHONE_NUMBER_ID}/messages`;
+
+    /** @type {any[]} */
+    const params = (variables || [])
+      .map((v) => String(v).trim())
+      .filter(Boolean)
+      .slice(0, 10)
+      .map((text) => ({ type: "text", text }));
+
+    const payload = {
+      messaging_product: "whatsapp",
+      to,
+      type: "template",
+      template: {
+        name: templateName,
+        language: { code: language },
+        ...(params.length
+          ? { components: [{ type: "body", parameters: params }] }
+          : {}),
+      },
+    };
+
+    pushEvent({
+      id: nowId("evt"),
+      ts: Date.now(),
+      kind: "info",
+      area: "send_template",
+      summary: `Enviando modelo "${templateName}" para ${to}`,
+      data: { to, payload },
+    });
+
+    const resp = await fetch(url, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${WHATSAPP_ACCESS_TOKEN}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+    const data = await resp.json().catch(() => ({}));
+
+    pushLog({
+      id: nowId("out"),
+      ts: Date.now(),
+      direction: "out",
+      to,
+      text: `[MODELO] ${templateName}`,
+      raw: { status: resp.status, data },
+    });
+
+    pushEvent({
+      id: nowId("evt"),
+      ts: Date.now(),
+      kind: resp.ok ? "info" : "error",
+      area: "send_template",
+      summary: resp.ok
+        ? `Modelo enviado para ${to} (HTTP ${resp.status})`
+        : `Falha ao enviar modelo para ${to} (HTTP ${resp.status})`,
+      data: { status: resp.status, response: data },
+    });
+
+    if (!resp.ok) {
+      return res.status(502).json({
+        ok: false,
+        error: "Falha ao enviar modelo",
+        details: data,
+      });
+    }
+
+    return res.json({ ok: true, result: data });
+  } catch (err) {
+    pushEvent({
+      id: nowId("evt"),
+      ts: Date.now(),
+      kind: "error",
+      area: "send_template",
+      summary: "Erro interno ao enviar modelo",
+      data: { error: String(err) },
+    });
+    return res.status(500).json({ ok: false, error: "Erro interno" });
   }
 });
 

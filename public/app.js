@@ -6,6 +6,11 @@ const sendStatus = $("sendStatus");
 const messagesEl = $("messages");
 const refreshBtn = $("refreshBtn");
 const demoFillBtn = $("demoFill");
+const templateSelect = $("templateSelect");
+const reloadTemplatesBtn = $("reloadTemplates");
+const modeNote = $("modeNote");
+const freeBox = $("freeBox");
+const templateBox = $("templateBox");
 
 let pollingTimer = null;
 let lastRenderKey = "";
@@ -47,8 +52,8 @@ async function loadHealth() {
     const cfg = data.configured || {};
     const okAll =
       cfg.verifyToken && cfg.whatsappAccessToken && cfg.phoneNumberId;
-    if (okAll) setBadge("ok", "API configurada");
-    else setBadge("warn", "Faltam variáveis no .env");
+    if (okAll) setBadge("ok", "Conectado");
+    else setBadge("warn", "Configuração incompleta");
   } catch (e) {
     setBadge("bad", "Erro no servidor");
   }
@@ -117,14 +122,87 @@ async function sendMessage(to, text) {
     const data = await r.json().catch(() => ({}));
     if (!r.ok || !data?.ok) {
       const err = data?.error || "Falha ao enviar";
-      setStatus("bad", `${err}${data?.details ? " (veja console)" : ""}`);
+      setStatus("bad", `${err}${data?.details ? " (veja detalhes em Atividade)" : ""}`);
       console.warn("send error:", data);
       return;
     }
-    setStatus("ok", "Mensagem enviada. Mostre o WhatsApp recebendo no vídeo.");
+    setStatus("ok", "Mensagem enviada.");
     await loadMessages();
   } catch (e) {
     setStatus("bad", `Erro: ${String(e)}`);
+  }
+}
+
+async function sendTemplate(to, templateName, language, vars) {
+  setStatus("", "Enviando modelo…");
+  try {
+    const r = await fetch("/api/send-template", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        to,
+        templateName,
+        language,
+        variables: vars,
+      }),
+    });
+    const data = await r.json().catch(() => ({}));
+    if (!r.ok || !data?.ok) {
+      const err = data?.error || "Falha ao enviar";
+      setStatus("bad", `${err}${data?.details ? " (veja detalhes em Atividade)" : ""}`);
+      console.warn("send-template error:", data);
+      return;
+    }
+    setStatus("ok", "Modelo enviado.");
+    await loadMessages();
+  } catch (e) {
+    setStatus("bad", `Erro: ${String(e)}`);
+  }
+}
+
+function getMode() {
+  const el = document.querySelector('input[name="sendMode"]:checked');
+  return el ? el.value : "free";
+}
+
+function applyModeUI() {
+  const mode = getMode();
+  if (mode === "template") {
+    freeBox.classList.add("hidden");
+    templateBox.classList.remove("hidden");
+    modeNote.innerHTML =
+      "<strong>Modelo</strong>: usado para iniciar conversa com um contato fora da janela de 24h. " +
+      "A mensagem é enviada usando um modelo aprovado.";
+  } else {
+    templateBox.classList.add("hidden");
+    freeBox.classList.remove("hidden");
+    modeNote.innerHTML =
+      "<strong>Mensagem livre</strong>: pode ser enviada para responder um contato dentro da janela de 24h desde a última mensagem do cliente. " +
+      "Para iniciar conversa fora da janela, use <strong>Modelo</strong>.";
+  }
+}
+
+async function loadTemplates() {
+  if (!templateSelect) return;
+  templateSelect.innerHTML = `<option>Carregando...</option>`;
+  try {
+    const r = await fetch("/api/templates");
+    const data = await r.json().catch(() => ({}));
+    if (!r.ok || !data?.ok) throw new Error(data?.error || "Falha ao listar");
+    const items = data.result?.data || [];
+    if (!items.length) {
+      templateSelect.innerHTML = `<option value="">Nenhum modelo encontrado</option>`;
+      return;
+    }
+    templateSelect.innerHTML = items
+      .map((t) => {
+        const name = t.name || "";
+        const status = t.status || "";
+        return `<option value="${escapeHtml(name)}">${escapeHtml(name)}${status ? ` — ${escapeHtml(status)}` : ""}</option>`;
+      })
+      .join("");
+  } catch (e) {
+    templateSelect.innerHTML = `<option value="">Falha ao carregar (veja Atividade)</option>`;
   }
 }
 
@@ -136,18 +214,42 @@ function startPolling() {
 sendForm?.addEventListener("submit", async (ev) => {
   ev.preventDefault();
   const to = $("toInput").value;
-  const text = $("textInput").value;
-  await sendMessage(to, text);
+  const mode = getMode();
+  if (mode === "template") {
+    const templateName = templateSelect?.value || "";
+    const language = $("templateLang")?.value || "pt_BR";
+    const varsRaw = $("templateVars")?.value || "";
+    const vars = varsRaw
+      .split("\n")
+      .map((s) => s.trim())
+      .filter(Boolean);
+    await sendTemplate(to, templateName, language, vars);
+  } else {
+    const text = $("textInput").value;
+    await sendMessage(to, text);
+  }
 });
 
 refreshBtn?.addEventListener("click", loadMessages);
 demoFillBtn?.addEventListener("click", () => {
-  if (!$("textInput").value)
-    $("textInput").value =
-      "Olá! Teste de envio pela WhatsApp Cloud API (Meta).";
+  const mode = getMode();
+  if (mode === "template") {
+    if ($("templateVars") && !$("templateVars").value) {
+      $("templateVars").value = "João\n10/01 às 15:00";
+    }
+  } else {
+    if (!$("textInput").value) $("textInput").value = "Olá! Como posso ajudar?";
+  }
 });
+
+document.querySelectorAll('input[name="sendMode"]').forEach((el) => {
+  el.addEventListener("change", applyModeUI);
+});
+reloadTemplatesBtn?.addEventListener("click", loadTemplates);
 
 // init
 loadHealth();
 loadMessages();
 startPolling();
+applyModeUI();
+loadTemplates();

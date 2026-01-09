@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Modelos (Templates) — Demo WhatsApp</title>
+    <title>Modelos de Mensagem — Central WhatsApp</title>
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
@@ -13,13 +13,13 @@
         <div class="brand">
           <div class="brand__logo">WA</div>
           <div class="brand__text">
-            <div class="brand__name">Demo WhatsApp Cloud API</div>
-            <div class="brand__sub">Evidência de criação/gestão de modelos</div>
+            <div class="brand__name">Central WhatsApp</div>
+            <div class="brand__sub">Modelos de mensagem</div>
           </div>
         </div>
         <nav class="nav">
           <a class="nav__link" href="/">Painel</a>
-          <a class="nav__link" href="/logs.html">Logs</a>
+          <a class="nav__link" href="/logs.html">Atividade</a>
           <a class="nav__link" href="/privacy.html">Privacidade</a>
           <a class="nav__link" href="/terms.html">Termos</a>
           <a class="nav__link" href="/templates.html">Modelos</a>
@@ -31,13 +31,12 @@
       <section class="grid">
         <div class="card">
           <div class="card__head">
-            <h2>Criar template (via API)</h2>
-            <div class="badge">whatsapp_business_management</div>
+            <h2>Criar modelo</h2>
+            <div class="badge">Admin</div>
           </div>
 
           <p class="muted small">
-            Isso chama o endpoint oficial de templates. Você precisa configurar <code>WHATSAPP_BUSINESS_ACCOUNT_ID</code> e ter permissão
-            <code>whatsapp_business_management</code>.
+            Modelos de mensagem são usados para iniciar conversas e realizar envios fora da janela de 24 horas.
           </p>
 
           <form id="tplForm" class="form">
@@ -85,7 +84,7 @@
           </div>
           <div class="list" id="tplList"></div>
           <div class="muted small">
-            Dica: para o vídeo, você também pode mostrar no WhatsApp Manager. Link abaixo.
+            Você também pode gerenciar modelos no painel do WhatsApp Manager.
           </div>
           <div class="row" style="margin-top: 12px;">
             <a class="btn btn--ghost" href="https://business.facebook.com/" target="_blank" rel="noreferrer">Abrir Business Manager</a>

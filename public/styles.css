@@ -183,6 +183,46 @@ input:focus,textarea:focus{border-color: rgba(88,166,255,.45); box-shadow: 0 0 0
 .status.ok{border-style: solid; border-color: rgba(55,211,154,.30); background: rgba(55,211,154,.08); color: rgba(55,211,154,.95);}
 .status.bad{border-style: solid; border-color: rgba(255,93,108,.30); background: rgba(255,93,108,.08); color: rgba(255,93,108,.95);}
 
+.hidden{display:none !important;}
+
+.segmented{
+  display:flex;
+  gap:8px;
+  padding:8px;
+  border:1px solid var(--line);
+  background: rgba(0,0,0,.12);
+  border-radius: 14px;
+}
+.segmented__opt{
+  flex:1;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:10px 12px;
+  border-radius: 12px;
+  border:1px solid transparent;
+  cursor:pointer;
+  user-select:none;
+  color: var(--muted);
+  background: rgba(255,255,255,.02);
+}
+.segmented__opt input{accent-color: var(--accent2);}
+.segmented__opt:has(input:checked){
+  border-color: rgba(88,166,255,.35);
+  background: rgba(88,166,255,.10);
+  color: var(--text);
+}
+
+.note{
+  padding:10px 12px;
+  border-radius: 12px;
+  border:1px dashed var(--line);
+  background: rgba(255,255,255,.03);
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.35;
+}
+
 .list{
   margin-top: 12px;
   display:flex;
