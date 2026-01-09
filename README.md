@@ -27,6 +27,7 @@ npm install
 - `VERIFY_TOKEN` (qualquer string)
 - `WHATSAPP_ACCESS_TOKEN`
 - `WHATSAPP_PHONE_NUMBER_ID`
+- `WHATSAPP_BUSINESS_ACCOUNT_ID` (WABA — necessário para templates)
 
 3) Suba o servidor:
 
@@ -45,8 +46,11 @@ Abra:
 - `GET /api/health` status e se as variáveis de ambiente estão preenchidas
 - `GET /api/messages` últimas mensagens (polling)
 - `POST /api/send` envia texto (`{ "to": "+5511999999999", "text": "..." }`)
+- `GET /api/templates` lista templates (requer `WHATSAPP_BUSINESS_ACCOUNT_ID`)
+- `POST /api/templates` cria template (requer `WHATSAPP_BUSINESS_ACCOUNT_ID`)
 - `GET /webhook` verificação do webhook (Meta)
 - `POST /webhook` recebimento de eventos
+- `GET /api/logs` logs do servidor (envio/webhook/templates)
 
 ## Configurando o Webhook no Meta
 
@@ -72,7 +76,12 @@ O painel também registra o envio e eventos recebidos no webhook.
 
 ### Vídeo 2 — permissão `whatsapp_business_management` (modelos/templates)
 
-No menu **Modelos** (`/templates.html`) tem um checklist.
+No menu **Modelos** (`/templates.html`) você pode:
+
+- Criar template via API (form)
+- Listar templates e ver status
+
+E no menu **Logs** (`/logs.html`) você consegue mostrar o payload/resposta para evidência.
 
 Normalmente, o caminho mais simples e aceito é:
 

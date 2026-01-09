@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Termos de Uso — Demo WhatsApp</title>
+    <title>Logs — Demo WhatsApp</title>
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
@@ -14,7 +14,7 @@
           <div class="brand__logo">WA</div>
           <div class="brand__text">
             <div class="brand__name">Demo WhatsApp Cloud API</div>
-            <div class="brand__sub">Termos de Uso</div>
+            <div class="brand__sub">Logs do servidor (envio/webhook/templates)</div>
           </div>
         </div>
         <nav class="nav">
@@ -30,29 +30,20 @@
     <main class="container main">
       <section class="card">
         <div class="card__head">
-          <h2>Termos de Uso</h2>
-          <div class="badge">Versão demo</div>
+          <h2>Eventos recentes</h2>
+          <div class="controls">
+            <button class="btn btn--ghost" id="refreshBtn" type="button">Atualizar</button>
+          </div>
         </div>
-
-        <div class="text">
-          <p><strong>1. Objetivo</strong><br />
-            Este site é uma demonstração técnica de integração com a WhatsApp Cloud API (Meta).
-          </p>
-
-          <p><strong>2. Uso permitido</strong><br />
-            Utilize apenas para testes e demonstração. Para produção, implemente autenticação, controle de acesso e conformidade legal.
-          </p>
-
-          <p><strong>3. Mensagens</strong><br />
-            O envio/recebimento de mensagens está sujeito às regras e políticas do WhatsApp/Meta e às limitações do número/conta configurados.
-          </p>
-
-          <p><strong>4. Limitação de responsabilidade</strong><br />
-            Esta demo é fornecida "no estado em que se encontra", sem garantias.
-          </p>
-        </div>
+        <p class="muted small">
+          Aqui você vê exatamente o que o servidor tentou enviar, o que recebeu no webhook, e respostas/erros do Graph API.
+        </p>
+        <div class="list" id="events"></div>
+        <div class="muted small">Atualização automática a cada <strong>2s</strong>.</div>
       </section>
     </main>
+
+    <script src="/logs.js"></script>
   </body>
 </html>
 

@@ -14,5 +14,7 @@ services:
         sync: false
       - key: WHATSAPP_PHONE_NUMBER_ID
         sync: false
+      - key: WHATSAPP_BUSINESS_ACCOUNT_ID
+        sync: false
 
 

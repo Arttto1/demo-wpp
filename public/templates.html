@@ -19,6 +19,7 @@
         </div>
         <nav class="nav">
           <a class="nav__link" href="/">Painel</a>
+          <a class="nav__link" href="/logs.html">Logs</a>
           <a class="nav__link" href="/privacy.html">Privacidade</a>
           <a class="nav__link" href="/terms.html">Termos</a>
           <a class="nav__link" href="/templates.html">Modelos</a>
@@ -27,38 +28,74 @@
     </header>
 
     <main class="container main">
-      <section class="card">
-        <div class="card__head">
-          <h2>Criação de modelo (template)</h2>
-          <div class="badge">Vídeo separado</div>
-        </div>
+      <section class="grid">
+        <div class="card">
+          <div class="card__head">
+            <h2>Criar template (via API)</h2>
+            <div class="badge">whatsapp_business_management</div>
+          </div>
 
-        <p class="muted">
-          Para a permissão <code>whatsapp_business_management</code>, a Meta pede um vídeo mostrando criação de um modelo de mensagem.
-          O jeito mais simples/aceito é criar pelo <strong>WhatsApp Manager</strong>.
-        </p>
-
-        <div class="text">
-          <p><strong>Checklist do vídeo</strong></p>
-          <ul>
-            <li>Abra o painel do WhatsApp Manager (na conta correta).</li>
-            <li>Vá em <em>Message templates</em> (Modelos de mensagem).</li>
-            <li>Crie um template simples (ex.: confirmação de agendamento).</li>
-            <li>Mostre o template criado e o status (enviado para aprovação / aprovado).</li>
-          </ul>
-
-          <p><strong>Dica</strong><br />
-            Se você quiser, eu posso adicionar um endpoint via Graph API para criar template programaticamente.
-            Mas para passar na análise, normalmente o vídeo pelo Manager é o caminho com menos risco.
+          <p class="muted small">
+            Isso chama o endpoint oficial de templates. Você precisa configurar <code>WHATSAPP_BUSINESS_ACCOUNT_ID</code> e ter permissão
+            <code>whatsapp_business_management</code>.
           </p>
+
+          <form id="tplForm" class="form">
+            <label class="field">
+              <span>Nome do template (sem espaços, minúsculo, ex.: <code>confirmacao_agendamento</code>)</span>
+              <input id="tplName" name="name" placeholder="confirmacao_agendamento" />
+            </label>
+
+            <div class="row">
+              <label class="field" style="flex:1; min-width: 220px;">
+                <span>Idioma</span>
+                <input id="tplLang" name="language" value="pt_BR" />
+              </label>
+              <label class="field" style="flex:1; min-width: 220px;">
+                <span>Categoria</span>
+                <input id="tplCategory" name="category" value="MARKETING" />
+              </label>
+            </div>
+
+            <label class="field">
+              <span>Texto do BODY</span>
+              <textarea
+                id="tplBody"
+                name="bodyText"
+                rows="5"
+                placeholder="Olá {{1}}, sua visita está confirmada para {{2}}."
+              ></textarea>
+            </label>
+
+            <div class="row">
+              <button class="btn" type="submit">Criar template</button>
+              <button class="btn btn--ghost" id="tplFill" type="button">Preencher exemplo</button>
+            </div>
+          </form>
+
+          <div class="status" id="tplStatus" aria-live="polite"></div>
         </div>
 
-        <div class="row" style="margin-top: 12px;">
-          <a class="btn btn--ghost" href="https://business.facebook.com/" target="_blank" rel="noreferrer">Abrir Business Manager</a>
-          <a class="btn btn--ghost" href="https://developers.facebook.com/" target="_blank" rel="noreferrer">Abrir Meta for Developers</a>
+        <div class="card">
+          <div class="card__head">
+            <h2>Templates existentes</h2>
+            <div class="controls">
+              <button class="btn btn--ghost" id="tplRefresh" type="button">Atualizar</button>
+            </div>
+          </div>
+          <div class="list" id="tplList"></div>
+          <div class="muted small">
+            Dica: para o vídeo, você também pode mostrar no WhatsApp Manager. Link abaixo.
+          </div>
+          <div class="row" style="margin-top: 12px;">
+            <a class="btn btn--ghost" href="https://business.facebook.com/" target="_blank" rel="noreferrer">Abrir Business Manager</a>
+            <a class="btn btn--ghost" href="https://developers.facebook.com/" target="_blank" rel="noreferrer">Abrir Meta for Developers</a>
+          </div>
         </div>
       </section>
     </main>
+
+    <script src="/templates.js"></script>
   </body>
 </html>
 
